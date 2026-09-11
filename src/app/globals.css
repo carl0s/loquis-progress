@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+/* Palette: cool paper tinted toward ink blue (h≈255), one vermilion signal. */
+@theme {
+  --color-paper: oklch(0.982 0.004 250);
+  --color-sheet: oklch(0.996 0.002 250);
+  --color-wash: oklch(0.958 0.008 255);
+  --color-rule: oklch(0.895 0.009 255);
+  --color-rule-strong: oklch(0.8 0.013 255);
+  --color-ink: oklch(0.24 0.035 258);
+  --color-ink-2: oklch(0.4 0.03 258);
+  --color-ink-3: oklch(0.52 0.022 258);
+  --color-signal: oklch(0.56 0.19 32);
+  --color-signal-wash: oklch(0.955 0.025 32);
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@theme inline {
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-josefin), var(--font-grotesk), ui-sans-serif, sans-serif;
+}
+
+/* Waiting on third parties is always drawn as hatching. */
+@utility hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    color-mix(in oklch, var(--color-ink) 60%, transparent) 0 1px,
+    transparent 1px 5px
+  );
+}
+
+@utility hatch-soft {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    color-mix(in oklch, var(--color-ink) 28%, transparent) 0 1px,
+    transparent 1px 5px
+  );
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-signal-wash);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+/* Row disclosure: animate grid rows, never height. */
+.fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms var(--ease-out-quart);
+}
+.fold[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.fold > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 640ms var(--ease-out-quart) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold {
+    transition: none;
+  }
+}
+
+/* Client view "Esporta PDF": A4 landscape so the timeline fits at full width. */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm 12mm 14mm;
+  }
+  html {
+    font-size: 13px;
+    background: none;
+  }
+  body {
+    background: none;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .rise {
+    animation: none;
+  }
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+  li,
+  section > header,
+  [role="img"] {
+    break-inside: avoid;
+  }
+  a {
+    text-decoration: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

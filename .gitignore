@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+.impeccable.md
+.vercelignore
 # dependencies
 /node_modules
 /.pnp
